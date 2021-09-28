@@ -1,6 +1,5 @@
-package producer_consumer;
-
 public class ProducerConsumerMonitor {
+    static final int MAX = 10000; // how many numbers to produce
     static final int N = 100; // constant giving the buffer size
     static Producer producer = new Producer(); // instantiate a new producer thread
     static Consumer consumer = new Consumer(); // instantiate a new consumer thread
@@ -21,7 +20,7 @@ public class ProducerConsumerMonitor {
         public void run() {
             int item;
             // producer loop
-            while (true) {
+            for (int i = 0; i < MAX; i++) {
                 item = produceItem();
                 monitor.insert(item);
             }
@@ -48,7 +47,7 @@ public class ProducerConsumerMonitor {
         public void run() {
             int item;
             // consumer loop
-            while (true) {
+            for (int i = 0; i < MAX; i++) {
                 item = monitor.remove();
                 consumeItem(item);
             }

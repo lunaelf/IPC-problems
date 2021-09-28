@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <mpi.h>
 
-#define TRUE 1
-#define N 100 // number of slots in the buffer
+#define MAX 10000 // how many numbers to produce
+#define N 100     // number of slots in the buffer
 
-int i_item = 1;
+int i_item = 1; // helper for producing item
 
 int produce_item();
 void build_message(int *message, int item);
@@ -32,8 +32,9 @@ int main(int argc, char **argv)
     {
         int item;
         int msg; // message buffer
+        int i;
 
-        while (TRUE)
+        for (i = 0; i < MAX; i++)
         {
             item = produce_item();                                                   // generate something to put in buffer
             MPI_Recv(&msg, 1, MPI_INT, other, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); // wait for an empty to arrive
@@ -44,14 +45,14 @@ int main(int argc, char **argv)
     else if (world_rank == 1) // consumer process
     {
         int item;
-        int i;
         int msg;
+        int i, j;
 
         for (i = 0; i < N; i++)
         {
             MPI_Send(&msg, 1, MPI_INT, other, 0, MPI_COMM_WORLD); // send N empties
         }
-        while (TRUE)
+        for (j = 0; j < MAX; j++)
         {
             MPI_Recv(&msg, 1, MPI_INT, other, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); // get message containing item
             item = extract_item(&msg);                                               // extract item from message

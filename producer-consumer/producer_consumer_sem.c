@@ -2,18 +2,18 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-#define TRUE 1
-#define N 100 // number of slots in the buffer
+#define MAX 10000 // how many numbers to produce
+#define N 100     // number of slots in the buffer
 
 sem_t *mutex; // controls access to critical region
 sem_t *empty; // counts empty buffer slots
 sem_t *full;  // counts full buffer slots
 
-int buffer[N]; // buffer used between producer and consumer
-int count = 0; // how many items in the buffer
-int lo = 0;    // pointer for consumer
-int hi = 0;    // pointer for producer
-int i = 1;     // helper for producing item
+int buffer[N];  // buffer used between producer and consumer
+int count = 0;  // how many items in the buffer
+int lo = 0;     // pointer for consumer
+int hi = 0;     // pointer for producer
+int i_item = 1; // helper for producing item
 
 void *producer(void *ptr);
 void *consumer(void *ptr);
@@ -45,9 +45,10 @@ int main(int argc, char **argv)
 
 void *producer(void *ptr)
 {
+    int i;
     int item;
 
-    while (TRUE) // TRUE is the constant 1
+    for (i = 1; i <= MAX; i++)
     {
         item = produce_item(); // generate something to put in buffer
         sem_wait(empty);       // decrement empty count
@@ -62,9 +63,10 @@ void *producer(void *ptr)
 
 void *consumer(void *ptr)
 {
+    int i;
     int item;
 
-    while (TRUE) // infinite loop
+    for (i = 1; i <= MAX; i++)
     {
         sem_wait(full);       // decrement full count
         sem_wait(mutex);      // enter critical region
@@ -79,8 +81,8 @@ void *consumer(void *ptr)
 
 int produce_item()
 {
-    int item = i;
-    i++;
+    int item = i_item;
+    i_item++;
     printf("produce: %d\n", item);
     return item;
 }

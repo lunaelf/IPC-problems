@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#define MAX 1000 // how many numbers to produce
-#define N 100
+#define MAX 10000 // how many numbers to produce
+#define N 100     // number of slots in the buffer
 
 pthread_mutex_t mutex;
 pthread_cond_t condc, condp; // used for signaling
